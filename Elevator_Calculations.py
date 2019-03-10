@@ -33,9 +33,6 @@ class elevatorCar:
     def getQueue(self):
         return self.queue
 
-    def setStartFloor(self):
-        self.startFloor = self.pos
-
     def roundPos(self):
         if self.velocity >= 0:
             if abs(math.ceil(self.pos) - self.pos) <= 0.2:
@@ -52,7 +49,7 @@ class elevatorCar:
     def addToQueue(self, itemToAdd):
         self.queue.append(itemToAdd)
         mySort(self.pos, self.queue)
-        elevatorCar.setStartFloor(self)
+        self.startFloor = self.pos
 
     def updateVelocity(self):
         if len(self.queue) == 0:
@@ -63,8 +60,8 @@ class elevatorCar:
         if elevatorCar.roundPos(self) == target:
             self.velocity = 0;
         elif target > self.pos:
-            if abs(self.pos-target) <= abs(self.startFloor-target)/5:
-                acceleration = -(pow(self.velocity,2)/2*abs(target-self.pos))
+            if abs(self.pos-target) <= abs(self.startFloor-target)/2:
+                acceleration = -0.6
             else:
                 acceleration = 0.6
                 
@@ -73,8 +70,8 @@ class elevatorCar:
             else:
                 self.velocity += acceleration/60
         elif target < self.pos:
-            if abs(self.pos - target) <= abs(self.startFloor-target)/5:
-                acceleration = (pow(self.velocity,2)/2*abs(target-self.pos))
+            if abs(self.pos - target) <= abs(self.startFloor-target)/2:
+                acceleration = 0.6
             else:
                 acceleration = -0.6
                 
