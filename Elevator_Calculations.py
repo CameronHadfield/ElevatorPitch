@@ -1,7 +1,6 @@
 """
 Performs calculations for the physics of an elevator which prioritizes
 moving to the furthest floor in the queue
-
 Author: Calum Offer
 Date Created: March 10 2019
 Date Last Modified: March 10 2019
@@ -37,13 +36,15 @@ class elevatorCar:
     # Rounds the closest position to an integer. The rounding is dependent on
     # which direction the car is moving
     def roundPos(self):
-        if self.velocity >= 0:
-            if abs(math.ceil(self.pos) - self.pos) <= 0.2:
+        if self.velocity == 0:
+            return round(self.pos)
+        elif self.velocity > 0:
+            if abs(math.ceil(self.pos) - self.pos) <= 0.01:
                 return math.ceil(self.pos)
             else:
                 return math.floor(self.pos)
         else:
-            if abs(math.floor(self.pos) - self.pos) <= 0.2:
+            if abs(math.floor(self.pos) - self.pos) <= 0.01:
                 return math.floor(self.pos)
             else:
                 return math.ceil(self.pos)
@@ -64,9 +65,10 @@ class elevatorCar:
             target = self.queue[0]
 
         if elevatorCar.roundPos(self) == target:
-            self.velocity = 0;
+            self.velocity = 0
+            self.pos = 0
         elif target > self.pos:
-            if abs(self.pos-target) <= abs(self.startFloor-target)/2:
+            if abs(self.pos-target) < abs(self.startFloor-target)/2:
                 acceleration = -0.6
             else:
                 acceleration = 0.6
@@ -76,7 +78,7 @@ class elevatorCar:
             else:
                 self.velocity += acceleration/60
         elif target < self.pos:
-            if abs(self.pos - target) <= abs(self.startFloor-target)/2:
+            if abs(self.pos - target) < abs(self.startFloor-target)/2:
                 acceleration = 0.6
             else:
                 acceleration = -0.6
@@ -91,7 +93,9 @@ class elevatorCar:
     def checkDestination(self):
         if len(self.queue) == 0:
             return True
-        elif self.queue[0] == elevatorCar.roundPos(self) and self.velocity == 0:
+        elif self.queue[0] == elevatorCar.roundPos(self):
+            self.pos = self.queue[0]
+            self.velocity = 0
             del self.queue[0]
             self.startFloor = self.pos
             return True
