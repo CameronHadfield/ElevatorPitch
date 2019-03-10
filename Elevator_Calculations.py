@@ -1,6 +1,16 @@
+"""
+Performs calculations for the physics of an elevator which prioritizes
+moving to the furthest floor in the queue
+
+Author: Calum Offer
+Date Created: March 10 2019
+Date Last Modified: March 10 2019
+"""
+#Imports
 import time
 import math
 
+# Sorts an inputted list from furthest from inputted bound to closest to inputted bound
 def mySort(bound, listToSort):
     for index in range(1,len(listToSort)):
         value = listToSort[index]
@@ -12,10 +22,10 @@ def mySort(bound, listToSort):
                 i = i - 1
             else:
                 break
-                
-            
 
-class elevatorCar: 
+# Elevator car class used to simulate a single elevator car
+class elevatorCar:
+    # Constructor Method
     def __init__(self, upSpeed, downSpeed, pos):
         self.upSpeed = upSpeed
         self.downSpeed = downSpeed
@@ -24,15 +34,8 @@ class elevatorCar:
         self.queue = []
         self.startFloor = pos
 
-    def getVelocity(self):
-        return self.velocity
-
-    def getPos(self):
-        return self.pos
-
-    def getQueue(self):
-        return self.queue
-
+    # Rounds the closest position to an integer. The rounding is dependent on
+    # which direction the car is moving
     def roundPos(self):
         if self.velocity >= 0:
             if abs(math.ceil(self.pos) - self.pos) <= 0.2:
@@ -46,11 +49,14 @@ class elevatorCar:
                 return math.ceil(self.pos)
             
 
+    # Adds a specified element to the elevator car queue. Causes the elevator car to
+    # resort the queue
     def addToQueue(self, itemToAdd):
         self.queue.append(itemToAdd)
         mySort(self.pos, self.queue)
         self.startFloor = self.pos
 
+    # Updates the car's velocity depending on which floor is first in the queue
     def updateVelocity(self):
         if len(self.queue) == 0:
             target = self.pos
@@ -80,35 +86,18 @@ class elevatorCar:
             else:
                 self.velocity += acceleration/60
 
+    # Checks if the car is within distance of the first item in queue.
+    # Stops at the floor if it is within the distance
     def checkDestination(self):
         if len(self.queue) != 0 and self.queue[0] == elevatorCar.roundPos(self) and self.velocity == 0:
             del self.queue[0]
             self.startFloor = self.pos
-            time.sleep(5)
+            return true
+        else:
+            return false
 
-
+    # Moves the elevator car and checks if it has arrived at the target floor
     def move(self):
         elevatorCar.updateVelocity(self)
         self.pos += self.velocity/60
-
-    
-
-    
-
-
-def main():
-    carOne = elevatorCar(15, -8, 15)
-    elevatorCar.addToQueue(carOne, 30)
-    elevatorCar.addToQueue(carOne, 1)
-
-    while True:
-        elevatorCar.move(carOne)
-        elevatorCar.checkDestination(carOne)
-        print(elevatorCar.roundPos(carOne))
-        time.sleep(1/60)
-        
-        
-
-
-if __name__ == "__main__":
-    main()
+        elevatorCar.checkDestination(self)
