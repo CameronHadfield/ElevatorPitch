@@ -89,12 +89,14 @@ class elevatorCar:
     # Checks if the car is within distance of the first item in queue.
     # Stops at the floor if it is within the distance
     def checkDestination(self):
-        if len(self.queue) != 0 and self.queue[0] == elevatorCar.roundPos(self) and self.velocity == 0:
+        if len(self.queue) == 0:
+            return True
+        elif self.queue[0] == elevatorCar.roundPos(self) and self.velocity == 0:
             del self.queue[0]
             self.startFloor = self.pos
-            return true
+            return True
         else:
-            return false
+            return False
 
     # Moves the elevator car and checks if it has arrived at the target floor
     def move(self):
